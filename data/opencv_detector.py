@@ -8,7 +8,19 @@ class OpenCVDetector(IDetector):
     def __init__(self, config_path, weights_path, classes_path):
         self.net = cv2.dnn.readNet(weights_path, config_path)
         self.classes = self.load_classes(classes_path)
-        self.COLORS = np.random.uniform(0, 255, size=(len(self.classes), 3))
+        self.COLORS = np.array([
+            [0, 0, 255],  # Red (BGR format)
+            [0, 255, 0],  # Green
+            [255, 0, 0],  # Blue
+            [0, 255, 255],  # Yellow
+            [255, 0, 255],  # Magenta
+            [255, 255, 0],  # Cyan
+        ])
+
+        if len(self.classes) > len(self.COLORS):
+            extra_colors = np.random.uniform(0, 255, size=(len(self.classes) - len(self.COLORS), 3))
+            self.COLORS = np.vstack([self.COLORS, extra_colors])
+
         self.conf_threshold = 0.5
         self.nms_threshold = 0.4
 
@@ -72,6 +84,14 @@ class OpenCVDetector(IDetector):
     def draw_predictions(self, image, detected_objects):
         for obj in detected_objects:
             label = str(self.classes[obj.class_id])
-            color = self.COLORS[obj.class_id]
+            color = self.COLORS[obj.class_id].tolist()  # Convert to list for cv2
+
             cv2.rectangle(image, (obj.x, obj.y), (obj.x_plus_w, obj.y_plus_h), color, 2)
-            cv2.putText(image, label, (obj.x - 10, obj.y - 10), cv2.FONT_HERSHEY_DUPLEX, 0.5, color, 2)
+
+            label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
+            
+            label_x = obj.x
+            label_y = obj.y - label_size[1] - 5
+            cv2.rectangle(image, (label_x, label_y), (label_x + label_size[0], label_y + label_size[1] + 5), color, cv2.FILLED)
+            
+            cv2.putText(image, label, (label_x, label_y + label_size[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)            
