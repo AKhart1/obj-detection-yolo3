@@ -1,7 +1,7 @@
 import cv2
 from utils.config_loader import load_yolo_config
 from utils.image_processor import load_image
-from data.opencv_detector import OpenCVDetector
+from data.opencv_Imgdetector import OpenCVDetector
 from core.use_cases.detect_objects import DetectObjectsUseCase
 
 def main():
