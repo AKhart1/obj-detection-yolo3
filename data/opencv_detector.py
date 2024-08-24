@@ -88,10 +88,10 @@ class OpenCVDetector(IDetector):
 
             cv2.rectangle(image, (obj.x, obj.y), (obj.x_plus_w, obj.y_plus_h), color, 2)
 
-            label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
+            label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_TRIPLEX, 0.5, 2)
             
             label_x = obj.x
             label_y = obj.y - label_size[1] - 5
             cv2.rectangle(image, (label_x, label_y), (label_x + label_size[0], label_y + label_size[1] + 5), color, cv2.FILLED)
             
-            cv2.putText(image, label, (label_x, label_y + label_size[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)            
+            cv2.putText(image, label, (label_x, label_y + label_size[1]), cv2.FORMATTER_FMT_PYTHON, 0.5, (0, 0, 0), 2)            
